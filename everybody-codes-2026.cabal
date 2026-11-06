@@ -23,3 +23,17 @@ executable quest01-part3
   main-is:          part3.hs
   hs-source-dirs:   quest01
 
+executable quest02-part1
+  import:           shared
+  main-is:          part1.hs
+  hs-source-dirs:   quest02
+
+executable quest02-part2
+  import:           shared
+  main-is:          part2.hs
+  hs-source-dirs:   quest02
+
+executable quest02-part3
+  import:           shared
+  main-is:          part3.hs
+  hs-source-dirs:   quest02
