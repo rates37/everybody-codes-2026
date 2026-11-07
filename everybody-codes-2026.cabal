@@ -67,3 +67,18 @@ executable quest04-part3
   import:           shared
   main-is:          part3.hs
   hs-source-dirs:   quest04
+
+executable quest05-part1
+  import:           shared
+  main-is:          part1.hs
+  hs-source-dirs:   quest05
+
+executable quest05-part2
+  import:           shared
+  main-is:          part2.hs
+  hs-source-dirs:   quest05
+
+executable quest05-part3
+  import:           shared
+  main-is:          part3.hs
+  hs-source-dirs:   quest05
