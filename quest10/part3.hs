@@ -1,0 +1,79 @@
+import qualified Data.Map.Strict as M
+import Data.Maybe (mapMaybe)
+
+type Ghost = (Int, Int, Char, Integer)
+
+clockwise :: Char -> Char
+clockwise '>' = 'v'
+clockwise 'v' = '<'
+clockwise '<' = '^'
+clockwise '^' = '>'
+clockwise c = c
+
+reverseDir :: Char -> Char
+reverseDir '>' = '<'
+reverseDir 'v' = '^'
+reverseDir '<' = '>'
+reverseDir '^' = 'v'
+reverseDir c = c
+
+move :: [String] -> Ghost -> Maybe Ghost
+move grid (r, c, d, remaining) =
+  let (nr, nc) = case d of
+        '>' -> (r, c + 1)
+        'v' -> (r + 1, c)
+        '<' -> (r, c - 1)
+        '^' -> (r - 1, c)
+        _ -> (r, c)
+   in if grid !! nr !! nc == '#'
+        then
+          if remaining == 1
+            then Nothing
+            else Just (r, c, clockwise d, remaining - 1)
+        else Just (nr, nc, d, remaining)
+
+roundSim :: [String] -> [Ghost] -> [Ghost]
+roundSim grid ghosts =
+  let moved = mapMaybe (move grid) ghosts
+
+      groups =
+        M.fromListWith
+          (+)
+          [((r, c), 1 :: Int) | (r, c, _, _) <- moved]
+
+      collide (r, c, d, remaining) =
+        if M.findWithDefault 0 (r, c) groups > 1
+          then
+            if remaining == 1
+              then Nothing
+              else Just (r, c, reverseDir d, remaining - 1)
+          else Just (r, c, d, remaining)
+   in mapMaybe collide moved
+
+simulate :: [String] -> [Ghost] -> Integer
+simulate grid = go M.empty 0
+  where
+    go seen rounds ghosts
+      | null ghosts = rounds
+      | otherwise =
+          let key = [(r, c, d) | (r, c, d, _) <- ghosts]
+              remaining = [n | (_, _, _, n) <- ghosts]
+           in case M.lookup key seen of
+                Just (oldRound, oldRemaining) ->
+                  let cycleLength = rounds - oldRound
+                      deltas = zipWith (-) oldRemaining remaining
+                      safeCycles = case [(n - 1) `div` d | (n, d) <- zip remaining deltas, d > 0] of
+                        [] -> 0
+                        xs -> minimum xs
+                   in if safeCycles > 0
+                        then
+                          let updated = zipWith (\(r, c, d, n) loss -> (r, c, d, n - safeCycles * loss)) ghosts deltas
+                           in go M.empty (rounds + safeCycles * cycleLength) updated
+                        else go M.empty (rounds + 1) (roundSim grid ghosts)
+                Nothing -> go (M.insert key (rounds, remaining) seen) (rounds + 1) (roundSim grid ghosts)
+
+main :: IO ()
+main = do
+  grid <- lines <$> readFile "quest10/input3.txt"
+
+  print $ simulate grid [(r, c, d, 1000000000000) | (r, row) <- zip [0 ..] grid, (c, d) <- zip [0 ..] row, d `elem` "<>^v"]
