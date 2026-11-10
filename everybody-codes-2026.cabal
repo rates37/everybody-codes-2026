@@ -5,7 +5,7 @@ build-type:         Simple
 
 common shared
   default-language: Haskell2010
-  build-depends:    base >=4 && <5, split, containers
+  build-depends:    base >=4 && <5, split, containers, array ^>=0.5.8.0
   ghc-options:      -Wall
 
 executable quest01-part1
@@ -157,3 +157,18 @@ executable quest10-part3
   import:           shared
   main-is:          part3.hs
   hs-source-dirs:   quest10
+
+executable quest11-part1
+  import:           shared
+  main-is:          part1.hs
+  hs-source-dirs:   quest11
+
+executable quest11-part2
+  import:           shared
+  main-is:          part2.hs
+  hs-source-dirs:   quest11
+
+executable quest11-part3
+  import:           shared
+  main-is:          part3.hs
+  hs-source-dirs:   quest11
