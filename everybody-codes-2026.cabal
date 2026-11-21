@@ -292,3 +292,18 @@ executable quest19-part3
   import:           shared
   main-is:          part3.hs
   hs-source-dirs:   quest19
+
+executable quest20-part1
+  import:           shared
+  main-is:          part1.hs
+  hs-source-dirs:   quest20
+
+executable quest20-part2
+  import:           shared
+  main-is:          part2.hs
+  hs-source-dirs:   quest20
+
+executable quest20-part3
+  import:           shared
+  main-is:          part3.hs
+  hs-source-dirs:   quest20
